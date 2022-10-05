@@ -28,7 +28,12 @@ import { defineComponent } from 'vue';
         },
         methods: {
             callElevator() {
-                this.isCall = true
+                if(this.isCall === false) this.$emit('callElevator', this.floor)
+            }
+        },
+        watch: {
+            waiting(newValue){
+                (newValue === true)? this.isCall = true: this.isCall = false
             }
         }
     })
