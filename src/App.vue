@@ -47,7 +47,6 @@ export default defineComponent({
       let tempArray:IFloor[] = []
       for (let i = 1; i <= this.floorsValue; i++) {
         tempArray.push({id: i, waiting: false})
-        if(!localStorage.getItem('elevatorsCurrentFloors')) this.elevatorsCurrentFloors.push(1)
       }
       tempArray.reverse()
       this.floors = tempArray
@@ -60,6 +59,7 @@ export default defineComponent({
       }
       for (let i = 1; i <= this.elevatorsValue; i++) {
         this.elevators.push({id: i, waiting: true, currentFloor: 1})
+        if(!localStorage.getItem('elevatorsCurrentFloors')) this.elevatorsCurrentFloors.push(1)
       }
       this.saveData()
     },
