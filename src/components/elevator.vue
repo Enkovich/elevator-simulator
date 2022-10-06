@@ -68,6 +68,14 @@ import { defineComponent } from "@vue/runtime-core";
                     }
                 }, 1000)
             }
+        },
+        methods: {
+            getStart(){
+                if(this.currentFloorElevator !== this.floorTask) this.currentFloorElevator = this.floorTask
+            }
+        },
+        mounted() {
+            this.getStart()
         }
     })
 </script>

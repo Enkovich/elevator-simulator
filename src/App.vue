@@ -47,15 +47,21 @@ export default defineComponent({
       let tempArray:IFloor[] = []
       for (let i = 1; i <= this.floorsValue; i++) {
         tempArray.push({id: i, waiting: false})
-        this.elevatorsCurrentFloors.push(1)
+        if(!localStorage.getItem('elevatorsCurrentFloors')) this.elevatorsCurrentFloors.push(1)
       }
       tempArray.reverse()
       this.floors = tempArray
     },
     elevatorsItems() {
+      if(localStorage.getItem('elevators')) {
+        let tempString = localStorage.getItem('elevators')
+        if(tempString) this.elevators = JSON.parse(tempString)
+        if(this.elevators.length !== 0) return false
+      }
       for (let i = 1; i <= this.elevatorsValue; i++) {
         this.elevators.push({id: i, waiting: true, currentFloor: 1})
       }
+      this.saveData()
     },
     callElevator(floorNum:number){
       let i = 0
@@ -76,6 +82,7 @@ export default defineComponent({
         
         if(!searchElevator) return false
         this.tasks.push(floorNum)
+        this.saveData()
       }
     },
     taskComplete(elevatorNum:number, floorTask:number)  {
@@ -90,12 +97,21 @@ export default defineComponent({
         this.elevators[elevatorNum-1] = {id: this.elevators[elevatorNum - 1].id, waiting: true, currentFloor: floorTask}
       }
       console.log(this.tasks, this.elevatorsCurrentFloors) 
+      this.saveData()
+    },
+    saveData(){
+      localStorage.elevators = JSON.stringify(this.elevators)
+      localStorage.elevatorsCurrentFloors = JSON.stringify(this.elevatorsCurrentFloors)
     }
   },
   computed: {},
   mounted(){
     this.floorsItems()
     this.elevatorsItems()
+    if(localStorage.getItem('elevatorsCurrentFloors')) {
+      let tempString = localStorage.getItem('elevatorsCurrentFloors')
+      if(tempString) this.elevatorsCurrentFloors = JSON.parse(tempString)
+    }
   }
 });
 </script>
