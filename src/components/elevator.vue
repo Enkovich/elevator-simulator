@@ -53,6 +53,11 @@ import { defineComponent } from "@vue/runtime-core";
                 let numTimeout = 0;
                 (newValue > this.currentFloorElevator) ? this.movement = '⬆':this.movement = '⬇';
                 
+                if (this.floorTask !== this.currentFloorElevator) {
+                    (newValue > this.currentFloorElevator) ? (this.currentFloorElevator++):(this.currentFloorElevator--)
+                    this.blockElevatorPosition = (this.currentFloorElevator - 1) * 90
+                }
+
                 let interval = setInterval(()=>{
                     if(this.floorTask === this.currentFloorElevator) {this.status = 'timeout'; this.timeoutElevator = true}
                     if(this.status === 'waiting') (newValue > this.currentFloorElevator) ? (this.currentFloorElevator++):(this.currentFloorElevator--)
