@@ -2,11 +2,11 @@
     <div class="blockElevator">
         <div class="floorElevator">
             <div v-for="floor in floorsInvert" :key="floor" class="blockFloorElevator">
-                <div class="elevatorCabin" v-if="floor === currentFloorElevator" v-bind:class="{blockTimeout: timeoutElevator}">
-                    <div class="blockElevatorDisplay">
-                        <div class="blockElevatorFloorTask">{{floorTask}}</div>
-                        <div class="blockElevatorDirection">{{movement}}</div> 
-                    </div>
+            </div>
+            <div class="elevatorCabin" :style="{'bottom': blockElevatorPosition + 'px'}" v-bind:class="{blockTimeout: timeoutElevator}">
+                <div class="blockElevatorDisplay">
+                    <div class="blockElevatorFloorTask">{{floorTask}}</div>
+                    <div class="blockElevatorDirection">{{movement}}</div> 
                 </div>
             </div>
         </div>
@@ -44,13 +44,15 @@ import { defineComponent } from "@vue/runtime-core";
                 currentFloorElevator: 1,
                 status: 'waiting',
                 timeoutElevator: false,
-                movement: ' '
+                movement: ' ',
+                blockElevatorPosition: 0
             }
         },
         watch: {
             floorTask(newValue) {
                 let numTimeout = 0;
                 (newValue > this.currentFloorElevator) ? this.movement = '⬆':this.movement = '⬇';
+                
                 let interval = setInterval(()=>{
                     if(this.floorTask === this.currentFloorElevator) {this.status = 'timeout'; this.timeoutElevator = true}
                     if(this.status === 'waiting') (newValue > this.currentFloorElevator) ? (this.currentFloorElevator++):(this.currentFloorElevator--)
@@ -65,12 +67,14 @@ import { defineComponent } from "@vue/runtime-core";
                         this.$emit('taskComplete', this.elevatorNumber, this.floorTask)
                         clearInterval(interval)
                     }
+                    this.blockElevatorPosition = (this.currentFloorElevator - 1) * 90
                 }, 1000)
             }
         },
         methods: {
             getStart(){
                 if(this.currentFloorElevator !== this.floorTask) this.currentFloorElevator = this.floorTask
+                this.blockElevatorPosition = (this.currentFloorElevator - 1) * 90
             }
         },
         mounted() {
@@ -95,11 +99,13 @@ import { defineComponent } from "@vue/runtime-core";
         .elevatorCabin{
             height: 90px;
             width: 100px;
-            margin: 0 auto;
+            left: 10px;
             background-color: aquamarine;
             z-index: -1;
-            position: relative;
+            position: absolute;
             border-radius: 5px;
+            bottom: calc((var(--elevatorPosition) - 1) * 90px);
+            transition: 1s linear;
         }
     }
     .blockElevatorDisplay{
