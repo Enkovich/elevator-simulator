@@ -35,7 +35,7 @@ export default defineComponent({
       //количество лифтов
       elevatorsValue: 3,
       //количество этажей
-      floorsValue: 8,
+      floorsValue: 7,
       tasks: [] as Number[],
       floors: [] as IFloor[],
       elevators: [] as IElevator[],
@@ -52,11 +52,20 @@ export default defineComponent({
       this.floors = tempArray
     },
     elevatorsItems() {
-      if(localStorage.getItem('elevators')) {
+      let tempNum = localStorage.getItem('elevatorValue')
+      let tempNum2 = localStorage.getItem('floorValue')
+      
+      if(tempNum) tempNum = JSON.parse(tempNum)
+      if(tempNum2) tempNum2 = JSON.parse(tempNum2)
+      
+      if(localStorage.getItem('elevators') && this.elevatorsValue===Number(tempNum)&&this.floorsValue===Number(tempNum2)) {
         let tempString = localStorage.getItem('elevators')
         if(tempString) this.elevators = JSON.parse(tempString)
         if(this.elevators.length !== 0) return false
       }
+
+      localStorage.floorValue = this.floorsValue
+      localStorage.elevatorValue = this.elevatorsValue
       for (let i = 1; i <= this.elevatorsValue; i++) {
         this.elevators.push({id: i, waiting: true, currentFloor: 1})
         if(!localStorage.getItem('elevatorsCurrentFloors')) this.elevatorsCurrentFloors.push(1)
