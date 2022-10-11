@@ -35,7 +35,7 @@ export default defineComponent({
       //количество лифтов
       elevatorsValue: 3,
       //количество этажей
-      floorsValue: 7,
+      floorsValue: 10,
       tasks: [] as Number[],
       floors: [] as IFloor[],
       elevators: [] as IElevator[],
@@ -75,21 +75,35 @@ export default defineComponent({
     callElevator(floorNum:number){
       let i = 0
       let searchElevator = true
-
+      let tempNum = 10000000000000000000000,
+          selectedElevator = 1000000000000000000000
       if(!this.elevatorsCurrentFloors.includes(floorNum)) {
+        
+
         while(i<=this.elevators.length-1) {
           if(this.elevators[i].waiting === true) {
-            this.elevatorsCurrentFloors = this.elevatorsCurrentFloors.filter((elem)=> {return elem !== this.elevators[i].currentFloor})
-            this.elevators[i] = {id: this.elevators[i].id, waiting: false, currentFloor: floorNum}
-            this.elevatorsCurrentFloors.push(floorNum)
-            i=i+this.elevators.length
+            let tempNum2 = floorNum - this.elevators[i].currentFloor
+            if(tempNum2 < 0) tempNum2 = tempNum2 * -1
+            if(tempNum2 < tempNum) {
+              tempNum = tempNum2
+              selectedElevator = i
+            }
+            console.log(tempNum, tempNum2, selectedElevator)
             searchElevator = false
           }
           i++
         }
+        
         this.floors[this.floors.length - floorNum].waiting = true
         
-        if(!searchElevator) return false
+        if(!searchElevator) {
+          this.elevatorsCurrentFloors = this.elevatorsCurrentFloors.filter((elem)=> {return elem !== this.elevators[selectedElevator].currentFloor})
+          this.elevators[selectedElevator] = {id: this.elevators[selectedElevator].id, waiting: false, currentFloor: floorNum}
+          this.elevatorsCurrentFloors.push(floorNum)
+          
+          return false
+        }
+        
         this.tasks.push(floorNum)
         this.saveData()
       }

@@ -7,7 +7,6 @@
                         <div class="blockElevatorFloorTask">{{floorTask}}</div>
                         <div class="blockElevatorDirection">{{movement}}</div> 
                     </div>
-                    
                 </div>
             </div>
         </div>
